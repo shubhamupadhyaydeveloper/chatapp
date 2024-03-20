@@ -1,5 +1,7 @@
 require('dotenv').config()
 const cookieparser = require('cookie-parser')
+const authRouter = require('./routes/auth.routes')
+const messageRouter = require('./routes/message.routes')
 const userRouter = require('./routes/user.routes')
 const express = require('express')
 const mongodb = require('./utils/connectdb')
@@ -10,7 +12,6 @@ const port = process.env.PORT || 3000
 mongodb()
 
 // middlewares
-app.use(express.urlencoded({extended : true}))
 app.use(express.json())
 app.use(cookieparser())
 
@@ -19,8 +20,9 @@ app.listen(port, () => {
 })
 
 // routes
-app.use('/api/user' , userRouter)
-
+app.use('/api/auth' , authRouter)
+app.use('/api/user', userRouter)
+app.use('/api/message', messageRouter)
 
  
 app.get('/', (req ,res) => {

@@ -13,7 +13,7 @@ const schema = new mongoose.Schema({
     password : {
         type : String,
         required : true,
-        minlength : 6
+        minLength : 6
     },
     email : {
         type : String,
@@ -29,7 +29,7 @@ const schema = new mongoose.Schema({
         required : true,
         enum : ["male","female"]
     }
-})
+},{timestamps : true})
 
 const User = mongoose.model("User",schema)
 
