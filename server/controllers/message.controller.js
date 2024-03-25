@@ -28,6 +28,7 @@ const sendMessage = async (req, res) => {
         await Promise.all([chat.save(),newMessage.save()])
 
         // socket io funtionality
+        
         res.status(201).json(newMessage)
 
     } catch (error) {

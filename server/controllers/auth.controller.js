@@ -10,17 +10,19 @@ const signUp = async (req, res) => {
         // Validate incoming data
         const validate = signUpSchema.validate(req.body, { abortEarly: false });
         if (validate.error) {
-            return res.status(400).json({ message: validate.error.details.map(d => d.message) });
+            return res.status(400).json({ error: validate.error.details.map(d => d.message) });
         }
 
         // Check if user already exists
         const existingUser = await User.findOne({ $or: [{ fullname }, { email }] });
         if (existingUser) {
-            return res.status(401).json({ message: "User already exists" });
+            return res.status(401).json({ error: "User already exists" });
         }
 
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
+        const boyProfilePic = `https://avatar.iran.liara.run/public/boy?username=${fullname}`;
+		const girlProfilePic = `https://avatar.iran.liara.run/public/girl?username=${fullname}`;
 
         // Create a new user instance
         const newUser = new User({
@@ -28,7 +30,8 @@ const signUp = async (req, res) => {
             email,
             profilename,
             gender,
-            password: hashedPassword
+            password: hashedPassword,
+            profilePic : gender === 'male' ? boyProfilePic : girlProfilePic
         });
 
         // Save the new user
@@ -56,7 +59,7 @@ const loginUser = async (req, res) => {
         const { fullname, password } = req.body;
         const user = await User.findOne({ fullname });
         const correctPassword = await bcrypt.compare(password, user?.password || "")
-        if (!user || !correctPassword) return res.status(400).json({ message: "Invalid username and password" })
+        if (!user || !correctPassword) return res.status(400).json({ error: "Invalid username and password" })
 
         generateToken(user._id, res)
 

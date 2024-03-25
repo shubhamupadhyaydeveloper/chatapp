@@ -13,10 +13,37 @@ import {
     Link,
 } from '@chakra-ui/react'
 import { useState } from 'react'
+import {useForm} from 'react-hook-form'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
+import { loginApi } from '../api/login'
+import { useDispatch } from 'react-redux'
+import { setUser } from '../../store/reducer'
+import useShowToast from '../hooks/ShowToast'
 
 export default function LoginPage() {
-    const [showPassword, setShowPassword] = useState(false)
+    const [showPassword, setShowPassword] = useState(false);
+    const {handleSubmit,register,formState:error,reset} = useForm()
+    const dispatch = useDispatch();
+    const showToast = useShowToast()
+    const handleFormSubmit =  async (data) => {
+       try {
+         const formdata = {
+            fullname : data.fullname,
+            password : data.password
+         }
+        const response =  await loginApi(formdata)
+        if(response.error){
+            showToast(response.error,'error')
+         }else{
+             showToast('Signup successfull','success')
+             localStorage.setItem("user", JSON.stringify(response))
+             dispatch(setUser(response))
+         }
+        reset()
+       } catch (error) {
+         console.log("Error login.jsx",error)
+       }
+    }
 
     return (
         <Flex
@@ -32,19 +59,23 @@ export default function LoginPage() {
                     w={['300px',"300px","300px","300px","350px"]}
                     p={8}>
                     <Text fontSize={"3xl"} fontWeight={"bold"} mx={"auto"} mb={3}>Login</Text>
+                    <form onSubmit={handleSubmit(handleFormSubmit)}>
                     <Stack spacing={4}>
                         <HStack>
                             <Box>
                                 <FormControl id="firstName" isRequired>
                                     <FormLabel>First Name</FormLabel>
-                                    <Input type="text" width={["230px","230px","230px","280px"]}/>
+                                    <Input type="text" width={["230px","230px","230px","280px"]} 
+                                     {...register('fullname', {required : "fullname is reqired"})}/>
                                 </FormControl>
                             </Box>
                         </HStack>
                         <FormControl id="password" isRequired>
                             <FormLabel>Password</FormLabel>
                             <InputGroup>
-                                <Input type={showPassword ? 'text' : 'password'} />
+                                <Input type={showPassword ? 'text' : 'password'} 
+                                 {...register('password',{required : "Password is required"})}
+                                />
                                 <InputRightElement h={'full'}>
                                     <Button
                                         variant={'ghost'}
@@ -56,6 +87,7 @@ export default function LoginPage() {
                         </FormControl>
                         <Stack spacing={10} pt={2}>
                             <Button
+                                type='submit'
                                 loadingText="Submitting"
                                 size="lg"
                                 bg={'blue.400'}
@@ -72,6 +104,7 @@ export default function LoginPage() {
                             </Text>
                         </Stack>
                     </Stack>
+                    </form>
                 </Box>
             </Stack>
         </Flex>

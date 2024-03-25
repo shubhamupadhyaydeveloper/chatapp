@@ -1,15 +1,22 @@
 import { Flex } from '@chakra-ui/react';
-import React from 'react'
+import React, { useEffect } from 'react'
 import Navbar from './Navbar';
 import Chats from './Chats';
 import Input from './Input';
 import WelcomePage from './Welcomepage';
+import useConversation from '../../../zustand/conversation';
 
 const Chatbox = () => {
-    const noChatselected = true
+    const { conversation ,setConversation } = useConversation()
+
+    // this is for remove previous user when you signup or login
+    useEffect(() => {
+       setConversation(null)
+    },[])
+  
     return (
         <>
-            {noChatselected ? <WelcomePage /> : (
+            {conversation ? (
 
                 <Flex flexDirection={"column"} ml={3}>
                     <Navbar />
@@ -17,7 +24,7 @@ const Chatbox = () => {
                     <Input />
                 </Flex>
 
-            )}
+            ) : <WelcomePage />}
 
         </>
     )
