@@ -14,7 +14,14 @@ const chatSchema = new mongoose.Schema({
             ref: "Message",
             default : []
         }
-    ]
+    ],
+    lastMessage :  {
+        text : String,
+        senderId :  {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : "User"
+        }
+    }
 },{timestamps : true})
 
 const Chat = mongoose.model('Chat', chatSchema)

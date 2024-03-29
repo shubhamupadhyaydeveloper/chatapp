@@ -45,7 +45,8 @@ const signUp = async (req, res) => {
             fullname: newUser.fullname,
             id: newUser._id,
             email: newUser.email,
-            gender: newUser.gender
+            gender: newUser.gender,
+            id :  newUser._id
         });
 
     } catch (err) {
@@ -68,7 +69,8 @@ const loginUser = async (req, res) => {
            profilename : user.profilename,
            gender : user.gender,
            profilePic : user.profilePic,
-           email : user.email
+           email : user.email,
+           id : user._id
         })
 
     } catch (err) {

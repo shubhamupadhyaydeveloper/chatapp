@@ -1,23 +1,33 @@
 import { Flex, Box, Avatar, Text } from '@chakra-ui/react';
 import { IoCheckmarkDone } from "react-icons/io5";
+import { useSelector } from 'react-redux';
+import useConversation from '../../../zustand/conversation';
+import {format} from 'date-fns'
 
-const ChatMessage = () => {
+const ChatMessage = ({chatDetail}) => {
+    if(!chatDetail) {
+        return null
+    }
+    console.log(chatDetail)
 
+    const currentUser = useSelector(state => state.user.isUser)
+    const isCurrentUser = currentUser?.id ===  chatDetail?.senderId
+    const {conversation} = useConversation()
     const isSeen = false
     return (
-        <Flex alignItems="center" mb={2} mt={2}>
-            <Avatar size="sm" src="https://bit.ly/dan-abramov" />
+        <Flex alignItems="center" mb={2} mt={2}  justifyContent={isCurrentUser ? "flex-end" : "flex-start"}>
+            <Avatar size="sm" src={isCurrentUser ? `${currentUser?.profilePic}` : `${conversation?.profilePic}`} />
             <Box
-                backgroundColor="gray.200"
+                backgroundColor={isCurrentUser ? 'green.200' : 'gray.500'}
                 color="black"
                 borderRadius={'lg'} 
                 px={3}
-                py={2}
+                py={.5}
                 ml={3}
                 position="relative" 
             >
-                <Text>hello developer</Text>
-                <Flex alignItems={"center"} gap={1}>{isSeen ? <IoCheckmarkDone size={"1.3rem"} color={isSeen && 'skyblue'} /> : <IoCheckmarkDone />} <Text fontSize={"xs"}>1:30</Text></Flex>
+                <Text>{chatDetail?.text}</Text>
+                <Flex alignItems={"center"} gap={1}>{isSeen ? <IoCheckmarkDone size={"1.3rem"} color={isSeen && 'darkred'} /> : <IoCheckmarkDone />} <Text fontSize={"xs"}>{format(new Date(chatDetail?.createdAt), 'HH:mm')}</Text></Flex>
             </Box>
 
         </Flex>

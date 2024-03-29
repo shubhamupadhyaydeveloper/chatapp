@@ -1,17 +1,25 @@
 import { useState } from 'react';
 import { Flex, Input, IconButton } from '@chakra-ui/react';
 import { FaPaperPlane, FaImage, FaSmile } from 'react-icons/fa';
+import { useSendMessageMutation } from '../../api/sendmessage';
 
 const ChatInput = () => {
   const [message, setMessage] = useState('');
+  const {mutateAsync,isPending} = useSendMessageMutation()
 
   const handleMessageChange = (e) => {
     setMessage(e.target.value);
   };
 
-  const handleSubmit = () => {
-    console.log("Message sent:", message);
-    setMessage('');
+  const handleSubmit = async () => {
+    try {
+      if(message.length > 0) {
+        const request = await mutateAsync(message)
+      }
+      setMessage('');
+    } catch (error) {
+      console.log('Error in send messagge',error)
+    }
   };
 
   return (
@@ -36,6 +44,7 @@ const ChatInput = () => {
       />
       <IconButton
         icon={<FaPaperPlane />}
+        isLoading={isPending}
         aria-label="Send Message"
         colorScheme="blue"
         onClick={handleSubmit}

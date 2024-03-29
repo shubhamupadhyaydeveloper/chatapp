@@ -7,11 +7,18 @@ const sendMessage = async (req, res) => {
         const receiverId = req.params.id
         const { text } = req.body;
         let chat = await Conversation.findOne({
-            participants: { $all: [senderId, receiverId] }
+            $or: [
+                { participants: [senderId, receiverId] },
+                { participants: [receiverId, senderId] }
+            ]
         })
         if (!chat) {
             chat = await Conversation.create({
-                participants: [senderId, receiverId]
+                participants: [senderId, receiverId],
+                lastMessage: {
+                    text,
+                    senderId
+                }
             })
         }
 
@@ -22,14 +29,21 @@ const sendMessage = async (req, res) => {
         })
 
         if (newMessage) {
+            chat.lastMessage = {
+                text,
+                senderId
+            };
             chat.messages.push(newMessage._id)
         }
 
-        await Promise.all([chat.save(),newMessage.save()])
+        await Promise.all([
+            newMessage.save(),
+            chat.save()
+        ])
 
         // socket io funtionality
-        
-        res.status(201).json(newMessage)
+
+        res.status(200).json(newMessage)
 
     } catch (error) {
         res.status(500).json({ error: error.message })
@@ -42,11 +56,14 @@ const getMessage = async (req, res) => {
         const senderId = req.user._id;
         const receiverId = req.params.id;
         const chat = await Conversation.findOne({
-            participants: { $all: [senderId, receiverId] }
+            $or: [
+                { participants: [senderId, receiverId] },
+                { participants: [receiverId, senderId] }
+            ]
         }).populate('messages')
         if (!chat) return res.status(200).json([]);
-        
-        res.status(200).json(chat.messages)
+
+        res.status(200).json(chat)
     } catch (error) {
         res.status(500).json({ error: error.message })
         console.log('Error in getMessage', error)
