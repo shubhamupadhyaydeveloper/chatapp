@@ -12,12 +12,17 @@ const io = new Server(server , {
     }
 })
 
-let onlineUser = {}
+function getSocketId(receiverId)   {
+    return onlineUser[receiverId];
+}
+
+const onlineUser = {}
 
 io.on('connection' , (socket) => {
     console.log('user is connected',socket.id)
     
     const userId = socket.handshake.query.userId;
+    
     if(userId != 'undefined') onlineUser[userId] = socket.id
 
     io.emit('onlineUsers' , Object.keys(onlineUser))
@@ -29,4 +34,4 @@ io.on('connection' , (socket) => {
     })
 })
 
-module.exports = {app,server,io}
+module.exports = {app,server,io,getSocketId}

@@ -16,6 +16,10 @@ export function socketConnection () {
         })
         setSocket(newSocket)
 
+        newSocket.on('newMessage',(newMessage) => {
+            console.log('newMessage',newMessage);
+        });
+
         newSocket.on('onlineUsers' ,  (users) => setOnlineUser(users))
         return () => newSocket.close()
     } else {

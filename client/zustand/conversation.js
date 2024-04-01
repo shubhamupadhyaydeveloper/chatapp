@@ -1,6 +1,8 @@
 import { create } from 'zustand'
 
 const useConversation = create((set) => ({
+    lastMessage : null,
+    setLastMessage : (lastMessage) => set({lastMessage}),
     socket : null,
     setSocket : (socket) => set({socket}),
     onlineUser : [],

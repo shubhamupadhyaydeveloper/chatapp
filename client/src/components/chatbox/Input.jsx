@@ -24,13 +24,6 @@ const ChatInput = () => {
 
   return (
     <Flex align="center" px={4} py={2} borderTop="1px solid #ccc">
-      <IconButton
-        icon={<FaImage />}
-        aria-label="Send Image"
-        mr={2}
-        colorScheme="blue"
-        onClick={() => console.log("Send Image")}
-      />
       <Input
         type="text"
         value={message}

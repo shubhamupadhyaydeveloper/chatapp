@@ -8,14 +8,13 @@ const ChatMessage = ({chatDetail}) => {
     if(!chatDetail) {
         return null
     }
-    console.log(chatDetail)
 
     const currentUser = useSelector(state => state.user.isUser)
     const isCurrentUser = currentUser?.id ===  chatDetail?.senderId
     const {conversation} = useConversation()
     const isSeen = false
     return (
-        <Flex alignItems="center" mb={2} mt={2}  justifyContent={isCurrentUser ? "flex-end" : "flex-start"}>
+        <Flex alignItems="center" mb={2} mt={2} mr={3}  justifyContent={isCurrentUser ? "flex-end" : "flex-start"}>
             <Avatar size="sm" src={isCurrentUser ? `${currentUser?.profilePic}` : `${conversation?.profilePic}`} />
             <Box
                 backgroundColor={isCurrentUser ? 'green.200' : 'gray.500'}

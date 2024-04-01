@@ -6,27 +6,26 @@ export function useSendMessageMutation() {
     const queryClient = useQueryClient()
 
     const { mutateAsync, isPending } = useMutation({
-        mutationFn: async (textdata) => {
+        mutationFn: async (text) => {
             try {
-                const data = {text : textdata}
                 const request = await fetch(`/api/message/send/${conversation?._id}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify({text})
                 });
                 if (!request.ok) return "Error in sendMessageApi" + await request.json();
 
                 const response = await request.json();
-                setMessage([response ,...message])
+                setMessage([...message,response])
                 return response;
             } catch (error) {
                 console.log(error);
             }
         }, 
         onSuccess : () => {
-            queryClient.invalidateQueries({queryKey : ['getmessage']})
+            queryClient.invalidateQueries({queryKey : ['getUsers']})
         }
     });
 

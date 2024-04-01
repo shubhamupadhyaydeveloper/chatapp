@@ -14,19 +14,23 @@ const Sidebar = () => {
         const request = await fetch('/api/user', {
           method: 'GET'
         })
-        return await request.json()
+        const response = await request.json()
+        return response
       } catch (error) {
         console.log('Error in getUsersApi', error.message)
       }
     }
   })
 
+  if(!data) {
+    return null
+  }
 
   return (
     <Flex flexDirection={"column"} mt={5} minW={"300px"} overflowY={"hidden"}>
       <Search />
       {isLoading && (
-        <Flex width={"250px"} justifyContent={'center'} alignItems={'center'} mt={3}>
+        <Flex width={"250px"} justifyContent={'center'} alignItems={'center'} mt={3} mb={"15rem"}>
           <Spinner size='md' />
         </Flex>
       )}

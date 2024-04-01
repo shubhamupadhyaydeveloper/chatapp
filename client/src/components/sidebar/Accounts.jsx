@@ -10,7 +10,7 @@ const Accounts = ({ users }) => {
   }
   return (
     <Flex flexDirection={"column"} overflowY={"auto"} height={["660px", "650px", "500px"]} mb={["1vh"]} mt={5}>
-      {users.map((user) => (
+      {users?.map((user) => (
         <Account key={user?._id} userDetail={user}/>
       ))}
     </Flex>

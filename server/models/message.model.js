@@ -14,7 +14,6 @@ const messageSchema = new mongoose.Schema({
     text : {
       type : String,
       required : true,
-      minLength: 5,
       required : true
     }
 },{timestamps :  true})

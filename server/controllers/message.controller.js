@@ -1,5 +1,6 @@
 const Conversation = require("../models/conversation.model")
 const Message = require('../models/message.model')
+const {io,getSocketId}  = require('../socket/socket')
 
 const sendMessage = async (req, res) => {
     try {
@@ -42,6 +43,11 @@ const sendMessage = async (req, res) => {
         ])
 
         // socket io funtionality
+        const receiverSocketId = getSocketId(receiverId)
+        if(receiverSocketId) {
+            io.to(receiverSocketId).emit('newMessage',newMessage)
+            console.log(`Message emitted to ${receiverSocketId}`);
+        }
 
         res.status(200).json(newMessage)
 
@@ -63,7 +69,7 @@ const getMessage = async (req, res) => {
         }).populate('messages')
         if (!chat) return res.status(200).json([]);
 
-        res.status(200).json(chat)
+        res.status(200).json(chat.messages)
     } catch (error) {
         res.status(500).json({ error: error.message })
         console.log('Error in getMessage', error)
